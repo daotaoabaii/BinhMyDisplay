@@ -5,15 +5,21 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Serve static frontend files (built by Vite)
+app.use(express.static(path.join(__dirname, 'public')));
 
 // MongoDB Connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/ai-image-finder';
@@ -137,11 +143,17 @@ app.get('/health', (req, res) => {
   res.json({ status: 'OK', message: 'Backend server is running' });
 });
 
+// Fallback route for SPA - serve index.html for all non-API routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 // Connect to DB and start server
 connectDB();
 
 app.listen(PORT, () => {
   console.log(`\n✓ Backend server running on http://localhost:${PORT}`);
   console.log(`✓ API endpoint: http://localhost:${PORT}/api`);
+  console.log(`✓ Frontend served from: http://localhost:${PORT}`);
   console.log(`✓ MongoDB: ${MONGODB_URI}\n`);
 });

@@ -1,0 +1,11 @@
+*.md
+.git
+.gitignore
+node_modules
+.env.example
+.DS_Store
+.vscode
+.idea
+ecosystem.config.js
+docker-compose.yml
+DOCKER.md

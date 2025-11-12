@@ -5,12 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && npm run build:server",
+    "build": "vite build",
     "build:full": "vite build && npm run build:server",
     "build:server": "echo 'Server ready for production'",
     "preview": "vite preview",
     "server": "node server.js",
-    "start": "concurrently \"npm run server\" \"npm run preview\"",
+    "start": "node server.js",
     "dev:full": "concurrently \"npm run server\" \"npm run dev\"",
     "start:full": "concurrently \"npm run server\" \"npm run preview\""
   },
