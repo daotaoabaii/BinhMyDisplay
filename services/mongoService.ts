@@ -6,8 +6,16 @@ const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/ai-ima
 
 let isConnected = false;
 
-// Mock API endpoint - change this to your backend URL
-const API_BASE_URL = process.env.VITE_API_URL || 'http://localhost:3001/api';
+// Get API base URL - use relative path in production, localhost in dev
+const getAPIBaseURL = () => {
+  if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+    return 'http://localhost:3000/api';
+  }
+  // In production, use relative path (same host as frontend)
+  return '/api';
+};
+
+const API_BASE_URL = process.env.VITE_API_URL || getAPIBaseURL();
 
 export const connectMongoDB = async () => {
   // This is called from client, but connection happens on backend

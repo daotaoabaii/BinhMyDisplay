@@ -22062,7 +22062,13 @@ const FullscreenViewer = ({ image, onClose }) => {
   );
 };
 var define_process_env_default = {};
-const API_BASE_URL = define_process_env_default.VITE_API_URL || "http://localhost:3001/api";
+const getAPIBaseURL = () => {
+  if (typeof window !== "undefined" && window.location.hostname === "localhost") {
+    return "http://localhost:3000/api";
+  }
+  return "/api";
+};
+const API_BASE_URL = define_process_env_default.VITE_API_URL || getAPIBaseURL();
 const getLatestImages = async (limit = 10) => {
   try {
     const response = await fetch(`${API_BASE_URL}/images?limit=${limit}`);
