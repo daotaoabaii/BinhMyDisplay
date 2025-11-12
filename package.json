@@ -1,0 +1,34 @@
+{
+  "name": "ai-drive-image-finder",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && npm run build:server",
+    "build:full": "vite build && npm run build:server",
+    "build:server": "echo 'Server ready for production'",
+    "preview": "vite preview",
+    "server": "node server.js",
+    "start": "concurrently \"npm run server\" \"npm run preview\"",
+    "dev:full": "concurrently \"npm run server\" \"npm run dev\"",
+    "start:full": "concurrently \"npm run server\" \"npm run preview\""
+  },
+  "dependencies": {
+    "@google/genai": "^1.28.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "googleapis": "^164.1.0",
+    "mongoose": "^7.8.7",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "concurrently": "^8.2.2",
+    "typescript": "~5.8.2",
+    "vite": "^6.2.0"
+  }
+}
