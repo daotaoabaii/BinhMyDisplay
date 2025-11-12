@@ -3,16 +3,17 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "engines": {
+    "node": "18.x"
+  },
   "scripts": {
     "dev": "vite",
+    "dev:full": "concurrently \"npm run server\" \"npm run dev\"",
     "build": "vite build",
-    "build:full": "vite build && npm run build:server",
-    "build:server": "echo 'Server ready for production'",
     "preview": "vite preview",
     "server": "node server.js",
-    "start": "node server.js",
-    "dev:full": "concurrently \"npm run server\" \"npm run dev\"",
-    "start:full": "concurrently \"npm run server\" \"npm run preview\""
+    "start": "npm run build && npm run server",
+    "start:prod": "node server.js"
   },
   "dependencies": {
     "@google/genai": "^1.28.0",

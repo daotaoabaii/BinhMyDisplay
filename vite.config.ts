@@ -9,9 +9,11 @@ export default defineConfig(({ mode }) => {
         port: 3000,
         host: '0.0.0.0',
       },
+      publicDir: false,
       build: {
         outDir: 'public',
         emptyOutDir: true,
+        minify: false,
       },
       plugins: [react()],
       define: {
