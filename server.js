@@ -93,6 +93,9 @@ app.get('/api/images', async (req, res) => {
 // GET /api/images/:id - Get image by ID
 app.get('/api/images/:id', async (req, res) => {
   try {
+    if (!mongoConnected) {
+      return res.status(503).json({ error: 'Database connection in progress...' });
+    }
     const image = await Image.findById(req.params.id).lean();
     
     if (!image) {
@@ -109,6 +112,9 @@ app.get('/api/images/:id', async (req, res) => {
 // POST /api/images - Create new image
 app.post('/api/images', async (req, res) => {
   try {
+    if (!mongoConnected) {
+      return res.status(503).json({ error: 'Database connection in progress...' });
+    }
     const newImage = new Image(req.body);
     await newImage.save();
     
@@ -122,6 +128,9 @@ app.post('/api/images', async (req, res) => {
 // PUT /api/images/:id - Update image
 app.put('/api/images/:id', async (req, res) => {
   try {
+    if (!mongoConnected) {
+      return res.status(503).json({ error: 'Database connection in progress...' });
+    }
     const image = await Image.findByIdAndUpdate(
       req.params.id,
       req.body,
@@ -142,6 +151,9 @@ app.put('/api/images/:id', async (req, res) => {
 // DELETE /api/images/:id - Delete image
 app.delete('/api/images/:id', async (req, res) => {
   try {
+    if (!mongoConnected) {
+      return res.status(503).json({ error: 'Database connection in progress...' });
+    }
     const image = await Image.findByIdAndDelete(req.params.id);
     
     if (!image) {
@@ -157,7 +169,11 @@ app.delete('/api/images/:id', async (req, res) => {
 
 // Health check
 app.get('/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Backend server is running' });
+  res.json({ 
+    status: 'OK', 
+    message: 'Backend server is running',
+    mongodb: mongoConnected ? 'connected' : 'connecting...'
+  });
 });
 
 // Fallback route for SPA - serve index.html for all non-API routes
