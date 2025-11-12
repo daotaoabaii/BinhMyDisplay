@@ -24,14 +24,28 @@ app.use(express.static(path.join(__dirname, 'public')));
 // MongoDB Connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/ai-image-finder';
 
-const connectDB = async () => {
-  try {
-    await mongoose.connect(MONGODB_URI);
-    console.log('✓ MongoDB connected');
-  } catch (error) {
-    console.error('✗ MongoDB connection error:', error.message);
-    process.exit(1);
+let mongoConnected = false;
+
+const connectDB = async (retries = 3) => {
+  for (let i = 0; i < retries; i++) {
+    try {
+      await mongoose.connect(MONGODB_URI, {
+        connectTimeoutMS: 10000,
+        socketTimeoutMS: 45000,
+        serverSelectionTimeoutMS: 10000,
+      });
+      console.log('✓ MongoDB connected');
+      mongoConnected = true;
+      return;
+    } catch (error) {
+      console.error(`✗ MongoDB attempt ${i + 1}/${retries} failed:`, error.message);
+      if (i < retries - 1) {
+        console.log('Retrying in 5 seconds...');
+        await new Promise(resolve => setTimeout(resolve, 5000));
+      }
+    }
   }
+  console.error('✗ Failed to connect MongoDB - server will start anyway');
 };
 
 // Image Schema
@@ -60,6 +74,9 @@ const Image = mongoose.model('Image', imageSchema);
 // GET /api/images - Get latest images
 app.get('/api/images', async (req, res) => {
   try {
+    if (!mongoConnected) {
+      return res.status(503).json({ error: 'Database connection in progress...' });
+    }
     const limit = parseInt(req.query.limit) || 10;
     const images = await Image.find()
       .sort({ createdAt: -1 })
