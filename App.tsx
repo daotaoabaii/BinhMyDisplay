@@ -38,9 +38,19 @@ function App() {
 
   // Auto-open first image in fullscreen when images change
   useEffect(() => {
-    if (images.length > 0 && !selectedImage && !isViewerOpen) {
+    if (images.length > 0 && !selectedImage) {
       setSelectedImage(images[0]);
       setIsViewerOpen(true);
+    }
+  }, [images]);
+
+  // Update selected image when images list changes (for live updates)
+  useEffect(() => {
+    if (isViewerOpen && selectedImage && images.length > 0) {
+      const updatedImage = images.find(img => img._id === selectedImage._id);
+      if (updatedImage && JSON.stringify(updatedImage) !== JSON.stringify(selectedImage)) {
+        setSelectedImage(updatedImage);
+      }
     }
   }, [images, selectedImage, isViewerOpen]);
 
