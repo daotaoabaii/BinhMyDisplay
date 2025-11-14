@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import type { ImageFile, MongoImage } from '../types';
 import { CloseIcon } from './icons';
 
@@ -10,6 +10,7 @@ interface FullscreenViewerProps {
 export const FullscreenViewer: React.FC<FullscreenViewerProps> = ({ image, onClose }) => {
   const imageSrc = 'base64' in image ? image.base64 : (image.imageBase64 || image.imageUrl);
   const imageName = 'file' in image ? image.file.name : image.imageName;
+  const imgRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     // Disable scrolling on the body when the viewer is open
@@ -30,6 +31,19 @@ export const FullscreenViewer: React.FC<FullscreenViewerProps> = ({ image, onClo
     };
   }, [onClose]);
 
+  // Auto-update image when source changes (smooth transition)
+  useEffect(() => {
+    if (imgRef.current) {
+      imgRef.current.style.opacity = '0.5';
+      const timer = setTimeout(() => {
+        if (imgRef.current) {
+          imgRef.current.style.opacity = '1';
+        }
+      }, 200);
+      return () => clearTimeout(timer);
+    }
+  }, [imageSrc]);
+
   return (
     <div
       className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 animate-fade-in"
@@ -43,9 +57,10 @@ export const FullscreenViewer: React.FC<FullscreenViewerProps> = ({ image, onClo
       {/* Image container - make image always fill the screen */}
       <div className="relative w-full h-full flex items-center justify-center p-0 m-0">
         <img
+          ref={imgRef}
           src={imageSrc}
           alt={imageName}
-          className="w-screen h-screen object-contain select-none"
+          className="w-screen h-screen object-contain select-none transition-opacity duration-200"
           style={{ maxWidth: '100vw', maxHeight: '100vh' }}
           // Stop propagation so clicking the image doesn't close the viewer
           onClick={(e) => e.stopPropagation()}

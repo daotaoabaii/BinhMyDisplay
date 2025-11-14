@@ -22,6 +22,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // MongoDB Connection
+// Make sure MONGODB_URI includes database name, e.g., mongodb+srv://user:pass@cluster.mongodb.net/database-name
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/ai-image-finder';
 
 let mongoConnected = false;
