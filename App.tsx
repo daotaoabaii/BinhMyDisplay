@@ -46,13 +46,17 @@ function App() {
 
   // Update selected image when images list changes (for live updates)
   useEffect(() => {
-    if (isViewerOpen && selectedImage && images.length > 0) {
-      const updatedImage = images.find(img => img._id === selectedImage._id);
-      if (updatedImage && JSON.stringify(updatedImage) !== JSON.stringify(selectedImage)) {
-        setSelectedImage(updatedImage);
+    if (isViewerOpen && images.length > 0) {
+      // Always update to the latest first image when in fullscreen mode
+      const latestImage = images[0];
+      if (!selectedImage || latestImage._id !== selectedImage._id) {
+        setSelectedImage(latestImage);
+      } else if (JSON.stringify(latestImage) !== JSON.stringify(selectedImage)) {
+        // If same image, still update if data changed (e.g., imageUrl or base64 updated)
+        setSelectedImage(latestImage);
       }
     }
-  }, [images, selectedImage, isViewerOpen]);
+  }, [images, isViewerOpen]);
 
   const handleCloseViewer = useCallback(() => {
     setIsViewerOpen(false);
