@@ -20,12 +20,6 @@ function App() {
       try {
         const latestImages = await getLatestImages(20);
         setImages(latestImages);
-        
-        // Auto-open first image in fullscreen
-        if (latestImages.length > 0 && !selectedImage) {
-          setSelectedImage(latestImages[0]);
-          setIsViewerOpen(true);
-        }
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "Đã xảy ra lỗi không mong muốn.";
         console.error("Failed to fetch images:", errorMessage);
@@ -37,10 +31,18 @@ function App() {
 
     fetchImages();
 
-    // Refresh images every 5 seconds (but don't change the viewer if it's open)
+    // Refresh images every 5 seconds
     const interval = setInterval(fetchImages, 5000);
     return () => clearInterval(interval);
-  }, [selectedImage]);
+  }, []);
+
+  // Auto-open first image in fullscreen when images change
+  useEffect(() => {
+    if (images.length > 0 && !selectedImage && !isViewerOpen) {
+      setSelectedImage(images[0]);
+      setIsViewerOpen(true);
+    }
+  }, [images, selectedImage, isViewerOpen]);
 
   const handleCloseViewer = useCallback(() => {
     setIsViewerOpen(false);
