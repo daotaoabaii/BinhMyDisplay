@@ -1,5 +1,6 @@
 // Cache Service for storing images and authentication data
-const DB_NAME = 'drive-image-finder';
+const DATABASE_NAME = process.env.DATABASE_NAME || 'ai_image_finder';
+const IMAGES_COLLECTION = 'images';
 const DB_VERSION = 1;
 const IMAGE_STORE = 'images';
 const AUTH_STORE = 'auth';
@@ -21,7 +22,7 @@ class CacheService {
 
   async init(): Promise<void> {
     return new Promise((resolve, reject) => {
-      const request = indexedDB.open(DB_NAME, DB_VERSION);
+      const request = indexedDB.open(DATABASE_NAME, DB_VERSION);
 
       request.onerror = () => reject(request.error);
       request.onsuccess = () => {
