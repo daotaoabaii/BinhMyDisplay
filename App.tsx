@@ -18,7 +18,7 @@ function App() {
       setIsLoading(true);
       setError(null);
       try {
-        const latestImages = await getLatestImages(20);
+        const latestImages = await getLatestImages(1);
         setImages(latestImages);
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "Đã xảy ra lỗi không mong muốn.";
@@ -32,7 +32,7 @@ function App() {
     fetchImages();
 
     // Refresh images every 5 seconds
-    const interval = setInterval(fetchImages, 5000);
+    const interval = setInterval(fetchImages, 1000);
     return () => clearInterval(interval);
   }, []);
 
@@ -92,22 +92,22 @@ function App() {
                   </div>
                 )}
                 <div className="flex-grow">
-                  <ResultDisplay 
+                  <ResultDisplay
                     images={images}
-                    isLoading={isLoading} 
+                    isLoading={isLoading}
                     onImageClick={handleImageClick}
                   />
                 </div>
               </div>
             </main>
-            
+
             <footer className="text-center mt-8 text-sm text-brand-muted">
               <p>Phát triển bởi Bộ phận Đào tạo - Viện Công nghệ Blockchain và Trí tuệ nhân tạo ABAII</p>
             </footer>
           </div>
         </div>
       )}
-      
+
       {/* Fullscreen viewer */}
       {isViewerOpen && selectedImage && (
         <FullscreenViewer
