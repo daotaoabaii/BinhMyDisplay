@@ -32,7 +32,7 @@ function App() {
     fetchImages();
 
     // Refresh images every 5 seconds
-    const interval = setInterval(fetchImages, 1000);
+    const interval = setInterval(fetchImages, 5000);
     return () => clearInterval(interval);
   }, []);
 
